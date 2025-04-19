@@ -37,7 +37,7 @@ export const CreateCategoryDialog = ({ type, onSuccessCallback }: Props) => {
   const queryClient = useQueryClient()
   const theme = useTheme()
 
-  const mutation = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: CreateCategory,
     onSuccess: async (data: Category) => {
       form.reset({
@@ -64,8 +64,8 @@ export const CreateCategoryDialog = ({ type, onSuccessCallback }: Props) => {
 
   const onSubmit = useCallback((value: CreateCategoriesSchemaType) => {
     toast.loading("Create categories", { id: "create-category" })
-    mutation.mutate(value)
-  }, [mutation.mutate])
+    mutate(value)
+  }, [mutate])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -106,7 +106,6 @@ export const CreateCategoryDialog = ({ type, onSuccessCallback }: Props) => {
                   <FormDescription>
                     Transaction name (required)
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -153,7 +152,6 @@ export const CreateCategoryDialog = ({ type, onSuccessCallback }: Props) => {
                   <FormDescription>
                     This is how categories will appear in the application
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -171,9 +169,9 @@ export const CreateCategoryDialog = ({ type, onSuccessCallback }: Props) => {
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={mutation.isPending}>
-            {!mutation.isPending && "Create"}
-            {mutation.isPending && <Loader2 className="animate-spin" />}
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+            {!isPending && "Create"}
+            {isPending && <Loader2 className="animate-spin" />}
           </Button>
         </DialogFooter>
       </DialogContent>
