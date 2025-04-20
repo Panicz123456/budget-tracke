@@ -127,7 +127,7 @@ export const CreateTransactionDialog = ({ trigger, type, }: Props) => {
                 control={form.control}
                 name="category"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Category </FormLabel>
                     <FormControl>
                       <CategoryPicker type={type} onChange={handleCategoryChange} />
@@ -143,7 +143,7 @@ export const CreateTransactionDialog = ({ trigger, type, }: Props) => {
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Transaction date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -168,7 +168,11 @@ export const CreateTransactionDialog = ({ trigger, type, }: Props) => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={value => {
+                            if (!value) return
+                            console.log("@@CALENDAR", value)
+                            field.onChange(value)
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
