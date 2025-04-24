@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import { Skeleton } from "./ui/skeleton"
+import {cn} from "@/lib/utils"
+import {Skeleton} from "./ui/skeleton"
 
 export const SkeletonWrapper = ({
   children,
@@ -12,7 +12,7 @@ export const SkeletonWrapper = ({
 }) => {
   if (!isLoading) return children
   return (
-    <Skeleton className={cn(fullWidth && "w-full")} >
+    <Skeleton className={cn(fullWidth && "w-full")}>
       <div className="opacity-0">
         {children}
       </div>

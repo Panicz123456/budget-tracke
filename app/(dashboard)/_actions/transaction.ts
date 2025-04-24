@@ -1,26 +1,24 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import {
-  CreateTransactionSchema,
-  CreateTransactionSchemaType,
-} from "@/schema/tranaction";
+import { CreateTransactionSchema, CreateTransactionSchemaType } from "@/schema/tranaction";
+
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export async function CreateTransaction(form: CreateTransactionSchemaType) {
-  const parseBody = CreateTransactionSchema.safeParse(form);
-  if (!parseBody.success) {
-    throw new Error(parseBody.error.message);
-  }
+  const parsedBody = CreateTransactionSchema.safeParse(form);
 
+  if (!parsedBody.success) {
+    throw new Error(parsedBody.error.message);
+  }
+  
   const user = await currentUser();
   if (!user) {
     redirect("/sign-in");
   }
 
-  const { amount, category, date, description, type } = parseBody.data;
-
+  const { amount, category, date, description, type } = parsedBody.data;
   const categoryRow = await prisma.category.findFirst({
     where: {
       userId: user.id,
@@ -29,10 +27,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   });
 
   if (!categoryRow) {
-    throw new Error("category not found");
+    throw new Error("Category not Found!");
   }
-
-  // NOTE: don't make confusion between $transaction (prisma) and prisma.transaction (table)
   await prisma.$transaction([
     // Create user transaction
     prisma.transaction.create({
@@ -41,6 +37,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         amount,
         date,
         description: description || "",
+        type,
         category: categoryRow.name,
         categoryIcon: categoryRow.icon,
       },

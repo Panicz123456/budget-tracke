@@ -1,14 +1,15 @@
 'use client'
 
-import { DateRangePicker } from "@/components/ui/date-range-picker"
-import { MAX_DATE_RANGE_DAYS } from "@/lib/constants"
-import { UserSettings } from "@prisma/client"
-import { differenceInDays, startOfMonth } from "date-fns"
-import { useState } from "react"
-import { toast } from "sonner"
-import { StatsCard } from "./StatsCard"
+import {DateRangePicker} from "@/components/ui/date-range-picker"
+import {MAX_DATE_RANGE_DAYS} from "@/lib/constants"
+import {UserSettings} from "@prisma/client"
+import {differenceInDays, startOfMonth} from "date-fns"
+import {useState} from "react"
+import {toast} from "sonner"
+import {StatsCard} from "./StatsCard"
+import { CategoriesStats } from "./CategoriesStats"
 
-export const Overview = ({ userSettings }: { userSettings: UserSettings }) => {
+export const Overview = ({userSettings}: { userSettings: UserSettings }) => {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: startOfMonth(new Date()),
     to: new Date()
@@ -24,7 +25,7 @@ export const Overview = ({ userSettings }: { userSettings: UserSettings }) => {
             initialDateTo={dateRange.to}
             showCompare={false}
             onUpdate={value => {
-              const { from, to } = value.range
+              const {from, to} = value.range
 
               if (!from || !to) return
               if (differenceInDays(to, from) > MAX_DATE_RANGE_DAYS) {
@@ -32,13 +33,19 @@ export const Overview = ({ userSettings }: { userSettings: UserSettings }) => {
                 return
               }
 
-              setDateRange({ from, to })
+              setDateRange({from, to})
             }}
           />
         </div>
       </div>
       <div className="container flex w-full flex-col gap-2">
         <StatsCard
+          userSettings={userSettings}
+          from={dateRange.from}
+          to={dateRange.to}
+        />
+
+        <CategoriesStats
           userSettings={userSettings}
           from={dateRange.from}
           to={dateRange.to}
